@@ -1,0 +1,88 @@
+import pygame 
+import math
+from bullet import Bullet
+
+FPS = 60
+
+ENEMY_SPEED = 2
+BULLET_SPEED = 7
+
+ENEMY_SPAWN_INTERVAL = 2000  # milliseconds (2 seconds)
+ENEMY_SHOOT_RANGE = 150
+HERO_MAX_HP = 3
+
+# Reload times (in seconds)
+HERO_RELOAD_TIME = 0.3
+ENEMY_RELOAD_TIME = 1.0
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill((255, 0, 0))  # Red color for enemy
+        self.rect = self.image.get_rect(center=(x, y))
+        
+        self.hp = 1
+        self.speed = ENEMY_SPEED
+        self.shoot_range = ENEMY_SHOOT_RANGE
+
+        # Shooting control
+        self.can_shoot = True
+        self.bullet_in_flight = False
+        self.next_shot_time = 0
+
+    def update(self, hero, bullet_group, current_time):
+        """Move toward hero unless within shooting range; if so, try to shoot."""
+        if self.hp <= 0:
+            return
+        
+        # Calculate distance to hero
+        dx = hero.rect.centerx - self.rect.centerx
+        dy = hero.rect.centery - self.rect.centery
+        distance = math.hypot(dx, dy)
+
+        if distance <= self.shoot_range:
+            # Try shooting
+            self.try_shoot(hero, bullet_group, current_time)
+        else:
+            # Move closer
+            angle = math.atan2(dy, dx)
+            self.rect.x += int(self.speed * math.cos(angle))
+            self.rect.y += int(self.speed * math.sin(angle))
+
+    def try_shoot(self, hero, bullet_group, current_time):
+        """
+        Attempt to shoot at hero if:
+         - can_shoot is True
+         - no bullet in flight
+         - current_time >= next_shot_time
+        """
+        if self.can_shoot and not self.bullet_in_flight and current_time >= self.next_shot_time:
+            # Direction from enemy to hero
+            dx = hero.rect.centerx - self.rect.centerx
+            dy = hero.rect.centery - self.rect.centery
+            distance = math.hypot(dx, dy)
+            if distance == 0:
+                distance = 1  # Avoid division by zero
+            direction_x = dx / distance
+            direction_y = dy / distance
+
+            # Create bullet
+            bullet = Bullet(
+                x=self.rect.centerx,
+                y=self.rect.centery,
+                direction_x=direction_x,
+                direction_y=direction_y,
+                owner="enemy",
+                parent=self
+            )
+            bullet_group.add(bullet)
+
+            self.bullet_in_flight = True
+            self.next_shot_time = current_time + int(ENEMY_RELOAD_TIME * 1000)
+            self.can_shoot = False
+
+    def update_shooting_cooldown(self, current_time):
+        """If current_time >= next_shot_time, can shoot again (and bullet_in_flight is False)."""
+        if current_time >= self.next_shot_time:
+            self.can_shoot = True
