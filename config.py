@@ -1,0 +1,23 @@
+import pygame
+
+pygame.init() 
+
+info = pygame.display.Info()
+SCREEN_WIDTH = info.current_w
+SCREEN_HEIGHT = info.current_h
+
+pygame.display.set_caption("Dodging Game with Popup")
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+clock = pygame.time.Clock()
+
+# Frames per second
+FPS = 60
+
+HERO_SPEED = 5
+HERO_MAX_HP = 3
+HERO_RELOAD_TIME = 1
+ENEMY_SPEED = 2.7
+ENEMY_SHOOT_RANGE = 200
+ENEMY_RELOAD_TIME = 2000
+BULLET_SPEED = 7
+ENEMY_SPAWN_INTERVAL = 3000

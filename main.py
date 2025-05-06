@@ -3,14 +3,8 @@ import sys
 from hero import Hero
 from bomb import Bomb
 import game_function as gf
+from config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, ENEMY_SPAWN_INTERVAL
 
-
-# Constants
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 750
-FPS = 60
-
-ENEMY_SPAWN_INTERVAL = 2000  # milliseconds (2 seconds)
 
 def main():
     # Groups for sprites

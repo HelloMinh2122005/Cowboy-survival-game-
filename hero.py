@@ -1,17 +1,7 @@
 import pygame
 from bullet import Bullet
 from bomb import Bomb 
-
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 750
-FPS = 60
-
-HERO_SPEED = 5
-
-HERO_MAX_HP = 3
-
-# Reload times (in seconds)
-HERO_RELOAD_TIME = 0.3
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, HERO_SPEED, HERO_MAX_HP, HERO_RELOAD_TIME
 
 class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -19,7 +9,7 @@ class Hero(pygame.sprite.Sprite):
         # Load the image
         self.original_image = pygame.image.load('assets/vietnam_tank.png').convert_alpha()
         # Scale the image if needed
-        self.original_image = pygame.transform.scale(self.original_image, (60, 80))
+        self.original_image = pygame.transform.scale(self.original_image, (90, 120))
         self.image = self.original_image
         self.rect = self.image.get_rect(center=(x, y))
         
@@ -116,7 +106,7 @@ class Hero(pygame.sprite.Sprite):
             self.bullet_in_flight = True
 
             # Set next time to shoot (cooldown)
-            self.next_shot_time = current_time + int(HERO_RELOAD_TIME * 1000)
+            self.next_shot_time = current_time + int(HERO_RELOAD_TIME)
             self.can_shoot = False
 
     def try_land_bomb(self, current_time, bomb_group):
@@ -129,7 +119,7 @@ class Hero(pygame.sprite.Sprite):
             )
             bomb_group.add(bomb)
 
-            self.next_bomb_time = current_time + int(HERO_RELOAD_TIME * 1000)
+            self.next_bomb_time = current_time + int(HERO_RELOAD_TIME)
             self.can_land_bomb = False
 
     def update_shooting_cooldown(self, current_time):

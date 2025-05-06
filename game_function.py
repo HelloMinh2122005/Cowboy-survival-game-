@@ -1,16 +1,9 @@
 import pygame
 import random 
 from enemy import Enemy 
+from config import SCREEN_WIDTH, SCREEN_HEIGHT
 
-# Constants
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 750
-FPS = 60
-
-pygame.init()
-pygame.display.set_caption("Dodging Game with Popup")
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pygame.time.Clock()
+from config import FPS, clock, screen
 
 def spawn_enemy(enemy_group):
     """Spawn an enemy at a random edge of the screen."""

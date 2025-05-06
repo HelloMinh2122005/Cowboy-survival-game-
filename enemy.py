@@ -2,24 +2,14 @@ import pygame
 import math
 from bullet import Bullet
 
-FPS = 60
+from config import ENEMY_SPEED, ENEMY_SHOOT_RANGE,ENEMY_RELOAD_TIME
 
-ENEMY_SPEED = 2
-BULLET_SPEED = 7
-
-ENEMY_SPAWN_INTERVAL = 2000  # milliseconds (2 seconds)
-ENEMY_SHOOT_RANGE = 150
-HERO_MAX_HP = 3
-
-# Reload times (in seconds)
-HERO_RELOAD_TIME = 0.3
-ENEMY_RELOAD_TIME = 1.0
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.original_image = pygame.image.load('assets/tank.png').convert_alpha()
-        self.original_image = pygame.transform.scale(self.original_image, (30, 40))
+        self.original_image = pygame.transform.scale(self.original_image, (60, 80))
         self.image = self.original_image
         self.rect = self.image.get_rect(center=(x, y))
         
@@ -88,7 +78,7 @@ class Enemy(pygame.sprite.Sprite):
             bullet_group.add(bullet)
 
             self.bullet_in_flight = True
-            self.next_shot_time = current_time + int(ENEMY_RELOAD_TIME * 1000)
+            self.next_shot_time = current_time + int(ENEMY_RELOAD_TIME)
             self.can_shoot = False
 
     def update_shooting_cooldown(self, current_time):
