@@ -18,8 +18,9 @@ ENEMY_RELOAD_TIME = 1.0
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((30, 30))
-        self.image.fill((255, 0, 0))  # Red color for enemy
+        self.original_image = pygame.image.load('assets/tank.png').convert_alpha()
+        self.original_image = pygame.transform.scale(self.original_image, (30, 40))
+        self.image = self.original_image
         self.rect = self.image.get_rect(center=(x, y))
         
         self.hp = 1
@@ -40,13 +41,21 @@ class Enemy(pygame.sprite.Sprite):
         dx = hero.rect.centerx - self.rect.centerx
         dy = hero.rect.centery - self.rect.centery
         distance = math.hypot(dx, dy)
+        
+        # Calculate angle for both movement and rotation
+        angle = math.atan2(dy, dx)
+        
+        rotation_angle = math.degrees(angle) + 90
+        self.image = pygame.transform.rotate(self.original_image, -rotation_angle)
+        old_center = self.rect.center
+        self.rect = self.image.get_rect()
+        self.rect.center = old_center
 
         if distance <= self.shoot_range:
             # Try shooting
             self.try_shoot(hero, bullet_group, current_time)
         else:
             # Move closer
-            angle = math.atan2(dy, dx)
             self.rect.x += int(self.speed * math.cos(angle))
             self.rect.y += int(self.speed * math.sin(angle))
 

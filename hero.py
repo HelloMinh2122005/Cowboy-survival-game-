@@ -2,8 +2,8 @@ import pygame
 from bullet import Bullet
 from bomb import Bomb 
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 750
 FPS = 60
 
 HERO_SPEED = 5
@@ -17,7 +17,7 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         # Load the image
-        self.original_image = pygame.image.load('assets/tank.png').convert_alpha()
+        self.original_image = pygame.image.load('assets/vietnam_tank.png').convert_alpha()
         # Scale the image if needed
         self.original_image = pygame.transform.scale(self.original_image, (60, 80))
         self.image = self.original_image

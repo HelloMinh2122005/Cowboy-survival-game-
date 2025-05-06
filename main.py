@@ -6,8 +6,8 @@ import game_function as gf
 
 
 # Constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 750
 FPS = 60
 
 ENEMY_SPAWN_INTERVAL = 2000  # milliseconds (2 seconds)
