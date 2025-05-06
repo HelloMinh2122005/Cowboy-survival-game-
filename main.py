@@ -2,6 +2,7 @@ import pygame
 import sys
 from hero import Hero
 from bomb import Bomb
+from explosion import Explosion
 import game_function as gf
 from config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, ENEMY_SPAWN_INTERVAL
 
@@ -12,7 +13,8 @@ def main():
     enemies = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
-    
+    explosions = pygame.sprite.Group()  
+
     # Create hero
     hero = Hero(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
     all_sprites.add(hero)
@@ -109,6 +111,9 @@ def main():
                         enemy.hp -= 1
                         bullet.destroy()
                         if enemy.hp <= 0:
+                            explosion = Explosion(enemy.rect.centerx, enemy.rect.centery)
+                            explosions.add(explosion)
+                            all_sprites.add(explosion)
                             enemy.kill()
                             # Increase score
                             score += 1
@@ -122,11 +127,18 @@ def main():
                     enemy.hp -= 3
                     bomb.destroy()
                     if enemy.hp <= 0:
+                        explosion = Explosion(enemy.rect.centerx, enemy.rect.centery)
+                        explosions.add(explosion)
+                        all_sprites.add(explosion)
                         enemy.kill()
                         # Increase score
                         score += 1
                         if score > high_score:
                             high_score = score
+
+        current_time = pygame.time.get_ticks()
+        for explosion in explosions:
+            explosion.update(current_time)
 
         # Clear screen
         gf.screen.fill((30, 30, 30))
