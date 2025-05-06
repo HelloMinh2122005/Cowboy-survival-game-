@@ -4,7 +4,7 @@ from hero import Hero
 from bomb import Bomb
 from explosion import Explosion
 import game_function as gf
-from config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, ENEMY_SPAWN_INTERVAL
+from config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, ENEMY_SPAWN_INTERVAL, BACKGROUND
 
 
 def main():
@@ -140,9 +140,8 @@ def main():
         for explosion in explosions:
             explosion.update(current_time)
 
-        # Clear screen
-        gf.screen.fill((30, 30, 30))
-        
+        gf.screen.blit(BACKGROUND, (0, 0))
+
         # Draw all sprites
         all_sprites.draw(gf.screen)
         
