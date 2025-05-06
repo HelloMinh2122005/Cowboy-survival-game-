@@ -68,6 +68,8 @@ def main():
         for enemy in enemies:
             enemy.update_shooting_cooldown(current_time)
             enemy.update(hero, bullets, current_time)
+
+        all_sprites.add(bullets)
         
         # Update bullets
         bullets.update()

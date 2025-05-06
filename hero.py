@@ -16,26 +16,29 @@ HERO_RELOAD_TIME = 0.3
 class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((40, 40))
-        self.image.fill((0, 128, 255))  # Blue color for hero
+        # Load the image
+        self.original_image = pygame.image.load('assets/tank.png').convert_alpha()
+        # Scale the image if needed
+        self.original_image = pygame.transform.scale(self.original_image, (60, 80))
+        self.image = self.original_image
         self.rect = self.image.get_rect(center=(x, y))
-
+        
         # Hero stats
         self.hp = HERO_MAX_HP
         self.speed = HERO_SPEED
-
+        
         # Last direction the hero moved (default to up)
         self.last_dir_x = 0
         self.last_dir_y = -1
-
+        
         # Shooting control
-        self.can_shoot = True          # Can the hero shoot right now?
-        self.bullet_in_flight = False  # Does the hero currently have a bullet on screen?
-        self.next_shot_time = 0        # Next time (ms) hero can shoot again
-
+        self.can_shoot = True
+        self.bullet_in_flight = False
+        self.next_shot_time = 0
+        
         # Landing bomb control 
         self.can_land_bomb = True
-        self.next_bomb_time = 0 
+        self.next_bomb_time = 0
 
     def handle_movement(self, keys_pressed):
         """Update hero position & store the last non-zero movement direction."""
@@ -53,6 +56,31 @@ class Hero(pygame.sprite.Sprite):
         if dx != 0 or dy != 0:
             self.last_dir_x = dx
             self.last_dir_y = dy
+            
+            # Rotate the image to face the direction of movement
+            angle = 0
+            if dx == 0 and dy == -1:  # Up
+                angle = 0
+            elif dx == 0 and dy == 1:  # Down
+                angle = 180
+            elif dx == -1 and dy == 0:  # Left
+                angle = 90
+            elif dx == 1 and dy == 0:  # Right
+                angle = 270
+            elif dx == -1 and dy == -1:  # Up-left
+                angle = 45
+            elif dx == 1 and dy == -1:  # Up-right
+                angle = 315
+            elif dx == -1 and dy == 1:  # Down-left
+                angle = 135
+            elif dx == 1 and dy == 1:  # Down-right
+                angle = 225
+                
+            self.image = pygame.transform.rotate(self.original_image, angle)
+            # Update rect position to maintain center position
+            old_center = self.rect.center
+            self.rect = self.image.get_rect()
+            self.rect.center = old_center
 
         # Move the hero
         self.rect.x += dx * self.speed
