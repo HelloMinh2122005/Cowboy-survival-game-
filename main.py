@@ -5,6 +5,7 @@ from src.entities.explosion import Explosion
 from src.configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
 import ui.hud as hud
 from src.systems.level import LevelManager
+from src.systems.collision import CollisionManager
 
 def main():
     # Groups for sprites
@@ -21,7 +22,8 @@ def main():
     level_manager = LevelManager()
     level_manager.setup_enemy_timer()
     
-    # Score variables
+    # Initialize collision manager
+    collision_manager = CollisionManager(hero, all_sprites, enemies, bullets, explosions, level_manager)
     score = 0
     highest_score = 0
 
@@ -42,7 +44,7 @@ def main():
                     hero.try_shoot(current_time, bullets)
                     all_sprites.add(bullets)
                 elif event.key == pygame.K_p:
-                    choice = hud.show_game_pause_popup(hud.screen, score, highest_score)
+                    choice = hud.show_game_pause_popup(hud.screen, collision_manager.score, collision_manager.highest_score)
                     if choice == "exit":
                         running = False
                     else: 
@@ -67,53 +69,15 @@ def main():
         # Update bullets
         bullets.update()
 
-        current_time = pygame.time.get_ticks()
+        # Check collisions and update game state
+        game_status = collision_manager.update(hud.screen)
         
-        # Check collisions: enemy bullet -> hero
-        for bullet in bullets:
-            if bullet.owner == "enemy":
-                if bullet.rect.colliderect(hero.rect):
-                    hero.hp -= 1
-                    bullet.destroy()
-                    if hero.hp <= 0:
-                        print("Game Over! You died.")
-                        choice = hud.show_game_over_popup(hud.screen, score, highest_score)
-
-                        if choice == "exit":
-                            running = False
-
-                        elif choice == "retry":
-                            # Re-initialize the game, but keep highest_score
-                            all_sprites.empty()
-                            enemies.empty()
-                            bullets.empty()
-                            hero = Hero(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-                            all_sprites.add(hero)
-                            score = 0
-                            level_manager.reset()
-                            continue
+        if not game_status["running"]:
+            running = False
         
-        # Check collisions: hero bullet -> enemy
-        for enemy in enemies:
-            for bullet in bullets:
-                if bullet.owner == "hero":
-                    if bullet.rect.colliderect(enemy.rect):
-                        enemy.hp -= 1
-                        bullet.destroy()
-                        if enemy.hp <= 0:
-                            explosion = Explosion(enemy.rect.centerx, enemy.rect.centery)
-                            explosions.add(explosion)
-                            all_sprites.add(explosion)
-                            enemy.kill()
-                            
-                            # Increase score
-                            score += 1
-                            if score > highest_score:
-                                highest_score = score
-
-                            # Check if level is complete
-                            if level_manager.enemy_killed():
-                                level_manager.advance_level(hud.screen)
+        if game_status["reset"]:
+            hero = collision_manager.reset_game()
+            continue
 
         current_time = pygame.time.get_ticks()
         for explosion in explosions:
@@ -124,7 +88,7 @@ def main():
         # Draw all sprites
         all_sprites.draw(hud.screen)
         
-        hud.display_hud(hud.screen, hero.hp, score, highest_score)
+        hud.display_hud(hud.screen, hero.hp, collision_manager.score, collision_manager.highest_score)
         
         pygame.display.flip()
         
