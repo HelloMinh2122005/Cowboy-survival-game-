@@ -45,9 +45,9 @@ class LevelManager:
         """Advance to the next level"""
         self.current_level += 1
         if self.current_level >= len(self.game_difficulty):
-            # Game completed - could handle final victory screen here
-            return False
-            
+            choice = hud.show_game_win_popup(screen)
+            return False, choice 
+                
         self.current_enemy_count = 0
         self.remaining_enemies = self.game_difficulty[self.current_level][0]
         
@@ -57,7 +57,7 @@ class LevelManager:
         # Show level transition screens
         hud.show_vid_next_level(screen, self.current_level)
         hud.show_game_next_level(screen, self.current_level)
-        return True
+        return True, None
         
     def reset(self):
         """Reset the level manager for a new game"""

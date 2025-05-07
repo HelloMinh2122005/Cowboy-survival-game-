@@ -37,7 +37,7 @@ class CollisionManager:
 
     def check_hero_bullets_enemy_collision(self, screen):
         """Check collisions between hero bullets and enemies"""
-        current_time = pygame.time.get_ticks()
+        game_status = {"running": True, "reset": False}  # Initialize game_status
         
         for enemy in self.enemies:
             for bullet in self.bullets:
@@ -58,7 +58,11 @@ class CollisionManager:
 
                             # Check if level is complete
                             if self.level_manager.enemy_killed():
-                                self.level_manager.advance_level(screen)
+                                level_result, choice = self.level_manager.advance_level(screen)
+                                if choice == "exit":
+                                    game_status["running"] = False
+        
+        return game_status 
 
     def reset_game(self):
         """Reset the game state while keeping highest score"""
@@ -73,6 +77,13 @@ class CollisionManager:
         
     def update(self, screen):
         """Run all collision checks and update game state"""
-        game_status = self.check_enemy_bullets_hero_collision(screen)
-        self.check_hero_bullets_enemy_collision(screen)
-        return game_status
+        game_status1 = self.check_enemy_bullets_hero_collision(screen)
+        game_status2 = self.check_hero_bullets_enemy_collision(screen)
+        
+        # Combine the game status results
+        final_status = {
+            "running": game_status1["running"] and game_status2["running"],
+            "reset": game_status1["reset"] or game_status2.get("reset", False)
+        }
+        
+        return final_status
