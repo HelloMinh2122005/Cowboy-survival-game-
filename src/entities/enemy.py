@@ -1,23 +1,25 @@
 import pygame 
 import math
-from bullet import Bullet
+from src.entities.bullet import Bullet
+from src.entities.base_entity import BaseEntity
+from configs.config import ENEMY_SPEED, ENEMY_SHOOT_RANGE, ENEMY_RELOAD_TIME
 
-from configs.config import ENEMY_SPEED, ENEMY_SHOOT_RANGE,ENEMY_RELOAD_TIME
-
-
-class Enemy(pygame.sprite.Sprite):
+class Enemy(BaseEntity):
     def __init__(self, x, y):
-        super().__init__()
-        self.original_image = pygame.image.load('assets/images/tank.png').convert_alpha()
-        self.original_image = pygame.transform.scale(self.original_image, (60, 80))
-        self.image = self.original_image
-        self.rect = self.image.get_rect(center=(x, y))
+        # Call BaseEntity's init with image path and size
+        super().__init__(
+            x=x, 
+            y=y, 
+            image_path='assets/images/tank.png',
+            size=(60, 80)
+        )
         
+        # Enemy-specific attributes
         self.hp = 1
         self.speed = ENEMY_SPEED
         self.shoot_range = ENEMY_SHOOT_RANGE
 
-        # Shooting control
+        # Initialize shooting capabilities
         self.can_shoot = True
         self.bullet_in_flight = False
         self.next_shot_time = 0
@@ -35,11 +37,9 @@ class Enemy(pygame.sprite.Sprite):
         # Calculate angle for both movement and rotation
         angle = math.atan2(dy, dx)
         
+        # Use BaseEntity's rotate_image method instead
         rotation_angle = math.degrees(angle) + 90
-        self.image = pygame.transform.rotate(self.original_image, -rotation_angle)
-        old_center = self.rect.center
-        self.rect = self.image.get_rect()
-        self.rect.center = old_center
+        self.rotate_image(-rotation_angle)
 
         if distance <= self.shoot_range:
             # Try shooting
@@ -80,8 +80,3 @@ class Enemy(pygame.sprite.Sprite):
             self.bullet_in_flight = True
             self.next_shot_time = current_time + int(ENEMY_RELOAD_TIME)
             self.can_shoot = False
-
-    def update_shooting_cooldown(self, current_time):
-        """If current_time >= next_shot_time, can shoot again (and bullet_in_flight is False)."""
-        if current_time >= self.next_shot_time:
-            self.can_shoot = True

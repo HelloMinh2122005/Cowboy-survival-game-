@@ -1,6 +1,5 @@
-import pygame
 import random 
-from enemy import Enemy 
+from src.entities.enemy import Enemy 
 from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
 from configs.config import FPS, clock, screen

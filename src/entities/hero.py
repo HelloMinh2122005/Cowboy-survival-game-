@@ -1,16 +1,17 @@
 import pygame
-from bullet import Bullet
+from src.entities.bullet import Bullet
+from src.entities.base_entity import BaseEntity
 from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, HERO_SPEED, HERO_MAX_HP, HERO_RELOAD_TIME
 
-class Hero(pygame.sprite.Sprite):
+class Hero(BaseEntity):
     def __init__(self, x, y):
-        super().__init__()
-        # Load the image
-        self.original_image = pygame.image.load('assets/images/vietnam_tank.png').convert_alpha()
-        # Scale the image if needed
-        self.original_image = pygame.transform.scale(self.original_image, (90, 120))
-        self.image = self.original_image
-        self.rect = self.image.get_rect(center=(x, y))
+        # Call BaseEntity's init with image path and size
+        super().__init__(
+            x=x, 
+            y=y, 
+            image_path='assets/images/vietnam_tank.png',
+            size=(90, 120)
+        )
         
         # Hero stats
         self.hp = HERO_MAX_HP
@@ -42,7 +43,7 @@ class Hero(pygame.sprite.Sprite):
             self.last_dir_x = dx
             self.last_dir_y = dy
             
-            # Rotate the image to face the direction of movement
+            # Calculate angle based on movement direction
             angle = 0
             if dx == 0 and dy == -1:  # Up
                 angle = 0
@@ -61,11 +62,8 @@ class Hero(pygame.sprite.Sprite):
             elif dx == 1 and dy == 1:  # Down-right
                 angle = 225
                 
-            self.image = pygame.transform.rotate(self.original_image, angle)
-            # Update rect position to maintain center position
-            old_center = self.rect.center
-            self.rect = self.image.get_rect()
-            self.rect.center = old_center
+            # Use BaseEntity's rotate_image method
+            self.rotate_image(angle)
 
         # Move the hero
         self.rect.x += dx * self.speed
@@ -82,13 +80,7 @@ class Hero(pygame.sprite.Sprite):
             self.rect.bottom = SCREEN_HEIGHT
 
     def try_shoot(self, current_time, bullet_group):
-        """
-        Attempt to shoot if:
-         - The hero can shoot right now (self.can_shoot)
-         - No bullet in flight
-        """
         if self.can_shoot and current_time >= self.next_shot_time:
-            # Create a bullet in the last move direction
             bullet = Bullet (
                 x=self.rect.centerx,
                 y=self.rect.centery,
@@ -100,10 +92,5 @@ class Hero(pygame.sprite.Sprite):
             bullet_group.add(bullet)
             self.bullet_in_flight = True
 
-            # Set next time to shoot (cooldown)
             self.next_shot_time = current_time + int(HERO_RELOAD_TIME)
             self.can_shoot = False
-
-    def update_shooting_cooldown(self, current_time):
-        if current_time >= self.next_shot_time:
-            self.can_shoot = True

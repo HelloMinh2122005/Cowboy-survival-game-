@@ -1,7 +1,7 @@
 import pygame
 import sys
-from hero import Hero
-from explosion import Explosion
+from src.entities.hero import Hero
+from src.entities.explosion import Explosion
 import game_function as gf
 from configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
 from configs.difficulty_config import *
