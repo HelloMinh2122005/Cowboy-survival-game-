@@ -61,6 +61,8 @@ class CollisionManager:
                                 level_result, choice = self.level_manager.advance_level(screen)
                                 if choice == "exit":
                                     game_status["running"] = False
+                                elif choice == "retry":
+                                    game_status["reset"] = True
         
         return game_status 
 
