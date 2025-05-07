@@ -6,7 +6,7 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         # Load the image
-        self.original_image = pygame.image.load('assets/vietnam_tank.png').convert_alpha()
+        self.original_image = pygame.image.load('assets/images/vietnam_tank.png').convert_alpha()
         # Scale the image if needed
         self.original_image = pygame.transform.scale(self.original_image, (90, 120))
         self.image = self.original_image

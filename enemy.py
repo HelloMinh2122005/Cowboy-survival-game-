@@ -8,7 +8,7 @@ from configs.config import ENEMY_SPEED, ENEMY_SHOOT_RANGE,ENEMY_RELOAD_TIME
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.original_image = pygame.image.load('assets/tank.png').convert_alpha()
+        self.original_image = pygame.image.load('assets/images/tank.png').convert_alpha()
         self.original_image = pygame.transform.scale(self.original_image, (60, 80))
         self.image = self.original_image
         self.rect = self.image.get_rect(center=(x, y))

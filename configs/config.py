@@ -11,7 +11,7 @@ pygame.display.set_caption("Game tông cửa 3 que")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-BACKGROUND = pygame.image.load("assets/war_background.jpg")
+BACKGROUND = pygame.image.load("assets/images/war_background.jpg")
 BACKGROUND = pygame.transform.scale(BACKGROUND, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Frames per second

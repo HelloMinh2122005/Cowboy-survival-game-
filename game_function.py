@@ -271,3 +271,12 @@ def show_game_next_level(screen, level):
         clock.tick(FPS)
         
     return "next"
+
+def show_vid_next_level(screen, level):
+    vid_to_display = [
+        "assets/videos/00.mp4",
+        "assets/videos/01.mp4",
+        "assets/videos/02.mp4",
+        "assets/videos/03.mp4",
+        "assets/videos/04.mp4",
+    ]
