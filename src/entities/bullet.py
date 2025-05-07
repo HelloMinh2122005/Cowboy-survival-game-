@@ -1,7 +1,7 @@
 import pygame
 import math
 from src.entities.base_entity import BaseEntity
-from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, BULLET_SPEED
+from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, BULLET_SPEED
 
 class Bullet(BaseEntity):
     def __init__(self, x, y, direction_x, direction_y, owner, parent):

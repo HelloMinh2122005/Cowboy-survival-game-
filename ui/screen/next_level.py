@@ -1,7 +1,6 @@
 import pygame
-from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, clock
 from moviepy.video.io.VideoFileClip import VideoFileClip
-from configs.config import FPS, clock
 
 def show_vid_next_level(screen, level):
     vid_to_display = [

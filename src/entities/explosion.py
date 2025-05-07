@@ -1,6 +1,6 @@
 import pygame
 from src.entities.base_entity import BaseEntity
-from configs.config import EXPLOSION_DURATION
+from src.configs.config import EXPLOSION_DURATION
 
 class Explosion(BaseEntity):
     def __init__(self, x, y):

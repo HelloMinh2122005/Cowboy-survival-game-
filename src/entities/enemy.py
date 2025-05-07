@@ -2,7 +2,7 @@ import pygame
 import math
 from src.entities.bullet import Bullet
 from src.entities.base_entity import BaseEntity
-from configs.config import ENEMY_SPEED, ENEMY_SHOOT_RANGE, ENEMY_RELOAD_TIME
+from src.configs.config import ENEMY_SPEED, ENEMY_SHOOT_RANGE, ENEMY_RELOAD_TIME
 
 class Enemy(BaseEntity):
     def __init__(self, x, y):

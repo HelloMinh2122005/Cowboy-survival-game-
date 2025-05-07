@@ -1,6 +1,6 @@
 import random 
 from src.entities.enemy import Enemy 
-from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
 def spawn_enemy(enemy_group):
     """Spawn an enemy at a random edge of the screen."""

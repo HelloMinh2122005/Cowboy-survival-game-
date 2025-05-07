@@ -2,18 +2,9 @@ import pygame
 import sys
 from src.entities.hero import Hero
 from src.entities.explosion import Explosion
-from configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
-from configs.difficulty_config import *
+from src.configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
 import ui.hud as hud
-from src.systems.spawner import spawn_enemy
-
-game_difficulty = [
-    [ENEMY_NUM_LV1, ENEMY_SPAWN_INTERVAL_LV1],
-    [ENEMY_NUM_LV2, ENEMY_SPAWN_INTERVAL_LV2],
-    [ENEMY_NUM_LV3, ENEMY_SPAWN_INTERVAL_LV3],
-    [ENEMY_NUM_LV4, ENEMY_SPAWN_INTERVAL_LV4],
-    [ENEMY_NUM_LV5, ENEMY_SPAWN_INTERVAL_LV5]
-]
+from src.systems.level import LevelManager
 
 def main():
     # Groups for sprites
@@ -26,10 +17,9 @@ def main():
     hero = Hero(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
     all_sprites.add(hero)
     
-    # Enemy spawn timer
-    current_level = 0
-    current_enemy = 0
-    pygame.time.set_timer(pygame.USEREVENT + 1, game_difficulty[current_level][1])
+    # Initialize level manager
+    level_manager = LevelManager()
+    level_manager.setup_enemy_timer()
     
     # Score variables
     score = 0
@@ -60,13 +50,8 @@ def main():
 
             # Spawn enemy event
             if event.type == pygame.USEREVENT + 1:
-                current_enemy += 1
-                game_difficulty[current_level][0] -= 1
-                if game_difficulty[current_level][0] <= 0:
-                    pass
-                    # wait for next level or game over
-                spawn_enemy(enemies)
-                all_sprites.add(enemies)
+                if level_manager.remaining_enemies > 0:
+                    level_manager.spawn_enemy(enemies, all_sprites)
         
         # Update hero
         hero.handle_movement(keys_pressed)
@@ -99,19 +84,13 @@ def main():
 
                         elif choice == "retry":
                             # Re-initialize the game, but keep highest_score
-                            # 1) Clear all groups
                             all_sprites.empty()
                             enemies.empty()
                             bullets.empty()
-                            # 2) Recreate the hero at center
                             hero = Hero(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
                             all_sprites.add(hero)
-                            # 3) Reset score to 0
                             score = 0
-                            # 4) Reset level
-                            current_level = 0
-                            pygame.time.set_timer(pygame.USEREVENT + 1, game_difficulty[current_level][1])
-                            # 5) Continue the game loop (i.e. start fresh)
+                            level_manager.reset()
                             continue
         
         # Check collisions: hero bullet -> enemy
@@ -126,19 +105,15 @@ def main():
                             explosions.add(explosion)
                             all_sprites.add(explosion)
                             enemy.kill()
+                            
                             # Increase score
                             score += 1
                             if score > highest_score:
                                 highest_score = score
 
-                            current_enemy -= 1
-                            if current_enemy <= 0 and game_difficulty[current_level][0] <= 0: 
-                                current_level += 1
-                                # show next level here
-                                pygame.time.set_timer(pygame.USEREVENT + 1, game_difficulty[current_level][1])
-                                hud.show_vid_next_level(hud.screen, current_level)
-                                hud.show_game_next_level(hud.screen, current_level)
-                            
+                            # Check if level is complete
+                            if level_manager.enemy_killed():
+                                level_manager.advance_level(hud.screen)
 
         current_time = pygame.time.get_ticks()
         for explosion in explosions:

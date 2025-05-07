@@ -1,7 +1,7 @@
 import pygame
 from src.entities.bullet import Bullet
 from src.entities.base_entity import BaseEntity
-from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, HERO_SPEED, HERO_MAX_HP, HERO_RELOAD_TIME
+from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, HERO_SPEED, HERO_MAX_HP, HERO_RELOAD_TIME
 
 class Hero(BaseEntity):
     def __init__(self, x, y):

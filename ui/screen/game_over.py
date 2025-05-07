@@ -1,7 +1,7 @@
 import pygame
-from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
+from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
-from configs.config import FPS, clock
+from src.configs.config import FPS, clock
 
 def show_game_over_popup(screen, current_score, high_score):
 

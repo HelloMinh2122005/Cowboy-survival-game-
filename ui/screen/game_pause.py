@@ -1,7 +1,5 @@
 import pygame
-from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
-
-from configs.config import FPS, clock
+from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, clock
 
 def show_game_pause_popup(screen, score, highest_score):
     
