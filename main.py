@@ -2,10 +2,10 @@ import pygame
 import sys
 from src.entities.hero import Hero
 from src.entities.explosion import Explosion
-import game_function as gf
 from configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
 from configs.difficulty_config import *
-from ui import hud
+import ui.hud as hud
+from src.systems.spawner import spawn_enemy
 
 game_difficulty = [
     [ENEMY_NUM_LV1, ENEMY_SPAWN_INTERVAL_LV1],
@@ -37,7 +37,7 @@ def main():
 
     running = True
     while running:
-        dt = gf.clock.tick(FPS)  # Limit frame rate
+        dt = hud.clock.tick(FPS)  # Limit frame rate
         current_time = pygame.time.get_ticks()  # current time in ms
         keys_pressed = pygame.key.get_pressed()
         
@@ -52,7 +52,7 @@ def main():
                     hero.try_shoot(current_time, bullets)
                     all_sprites.add(bullets)
                 elif event.key == pygame.K_p:
-                    choice = hud.show_game_pause_popup(gf.screen, score, highest_score)
+                    choice = hud.show_game_pause_popup(hud.screen, score, highest_score)
                     if choice == "exit":
                         running = False
                     else: 
@@ -65,7 +65,7 @@ def main():
                 if game_difficulty[current_level][0] <= 0:
                     pass
                     # wait for next level or game over
-                gf.spawn_enemy(enemies)
+                spawn_enemy(enemies)
                 all_sprites.add(enemies)
         
         # Update hero
@@ -92,7 +92,7 @@ def main():
                     bullet.destroy()
                     if hero.hp <= 0:
                         print("Game Over! You died.")
-                        choice = hud.show_game_over_popup(gf.screen, score, highest_score)
+                        choice = hud.show_game_over_popup(hud.screen, score, highest_score)
 
                         if choice == "exit":
                             running = False
@@ -136,29 +136,20 @@ def main():
                                 current_level += 1
                                 # show next level here
                                 pygame.time.set_timer(pygame.USEREVENT + 1, game_difficulty[current_level][1])
-                                hud.show_vid_next_level(gf.screen, current_level)
-                                hud.show_game_next_level(gf.screen, current_level)
+                                hud.show_vid_next_level(hud.screen, current_level)
+                                hud.show_game_next_level(hud.screen, current_level)
                             
 
         current_time = pygame.time.get_ticks()
         for explosion in explosions:
             explosion.update(current_time)
 
-        gf.screen.blit(BACKGROUND, (0, 0))
+        hud.screen.blit(BACKGROUND, (0, 0))
 
         # Draw all sprites
-        all_sprites.draw(gf.screen)
+        all_sprites.draw(hud.screen)
         
-        # Display HUD (HP, Score, High Score)
-        font = pygame.font.SysFont(None, 36)
-        hp_text = font.render(f"HP: {hero.hp}", True, (255, 255, 255))
-        gf.screen.blit(hp_text, (10, 10))
-
-        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
-        gf.screen.blit(score_text, (10, 50))
-
-        highest_score_text = font.render(f"Highest Score: {highest_score}", True, (255, 255, 255))
-        gf.screen.blit(highest_score_text, (10, 90))
+        hud.display_hud(hud.screen, hero.hp, score, highest_score)
         
         pygame.display.flip()
         

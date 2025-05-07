@@ -2,8 +2,6 @@ import random
 from src.entities.enemy import Enemy 
 from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
-from configs.config import FPS, clock, screen
-
 def spawn_enemy(enemy_group):
     """Spawn an enemy at a random edge of the screen."""
     side = random.choice(["top", "bottom", "left", "right"])
