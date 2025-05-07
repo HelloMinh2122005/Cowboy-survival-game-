@@ -5,6 +5,7 @@ from explosion import Explosion
 import game_function as gf
 from configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
 from configs.difficulty_config import *
+from ui import hud
 
 game_difficulty = [
     [ENEMY_NUM_LV1, ENEMY_SPAWN_INTERVAL_LV1],
@@ -51,7 +52,7 @@ def main():
                     hero.try_shoot(current_time, bullets)
                     all_sprites.add(bullets)
                 elif event.key == pygame.K_p:
-                    choice = gf.show_game_pause_popup(gf.screen, score, highest_score)
+                    choice = hud.show_game_pause_popup(gf.screen, score, highest_score)
                     if choice == "exit":
                         running = False
                     else: 
@@ -91,7 +92,7 @@ def main():
                     bullet.destroy()
                     if hero.hp <= 0:
                         print("Game Over! You died.")
-                        choice = gf.show_game_over_popup(gf.screen, score, highest_score)
+                        choice = hud.show_game_over_popup(gf.screen, score, highest_score)
 
                         if choice == "exit":
                             running = False
@@ -135,7 +136,8 @@ def main():
                                 current_level += 1
                                 # show next level here
                                 pygame.time.set_timer(pygame.USEREVENT + 1, game_difficulty[current_level][1])
-                                gf.show_game_next_level(gf.screen, current_level)
+                                hud.show_vid_next_level(gf.screen, current_level)
+                                hud.show_game_next_level(gf.screen, current_level)
                             
 
         current_time = pygame.time.get_ticks()
