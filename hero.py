@@ -1,7 +1,6 @@
 import pygame
 from bullet import Bullet
-from bomb import Bomb 
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, HERO_SPEED, HERO_MAX_HP, HERO_RELOAD_TIME
+from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, HERO_SPEED, HERO_MAX_HP, HERO_RELOAD_TIME
 
 class Hero(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -26,10 +25,6 @@ class Hero(pygame.sprite.Sprite):
         self.bullet_in_flight = False
         self.next_shot_time = 0
         
-        # Landing bomb control 
-        self.can_land_bomb = True
-        self.next_bomb_time = 0
-
     def handle_movement(self, keys_pressed):
         """Update hero position & store the last non-zero movement direction."""
         dx, dy = 0, 0
@@ -109,23 +104,6 @@ class Hero(pygame.sprite.Sprite):
             self.next_shot_time = current_time + int(HERO_RELOAD_TIME)
             self.can_shoot = False
 
-    def try_land_bomb(self, current_time, bomb_group):
-        if self.can_land_bomb and current_time >= self.next_bomb_time:
-            bomb = Bomb(
-                x=self.rect.centerx,
-                y=self.rect.centery,
-                owner="hero",
-                parent=self
-            )
-            bomb_group.add(bomb)
-
-            self.next_bomb_time = current_time + int(HERO_RELOAD_TIME)
-            self.can_land_bomb = False
-
     def update_shooting_cooldown(self, current_time):
         if current_time >= self.next_shot_time:
             self.can_shoot = True
-
-    def update_landing_bomb_cooldown(self, current_time):
-        if current_time >= self.next_bomb_time:
-            self.can_land_bomb = True   

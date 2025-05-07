@@ -1,18 +1,16 @@
 import pygame
 import sys
 from hero import Hero
-from bomb import Bomb
 from explosion import Explosion
 import game_function as gf
-from config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, ENEMY_SPAWN_INTERVAL, BACKGROUND
-
+from configs.config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS, BACKGROUND
+from configs.difficulty_config import *
 
 def main():
     # Groups for sprites
     all_sprites = pygame.sprite.Group()
     enemies = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
-    bombs = pygame.sprite.Group()
     explosions = pygame.sprite.Group()  
 
     # Create hero
@@ -20,7 +18,7 @@ def main():
     all_sprites.add(hero)
     
     # Enemy spawn timer
-    pygame.time.set_timer(pygame.USEREVENT + 1, ENEMY_SPAWN_INTERVAL)
+    pygame.time.set_timer(pygame.USEREVENT + 1, ENEMY_SPAWN_INTERVAL_LV1)
     
     # Score variables
     score = 0
@@ -42,14 +40,6 @@ def main():
                     hero.try_shoot(current_time, bullets)
                     all_sprites.add(bullets)
 
-
-            # Hero tries to land bomb
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_n:
-                    bomb = Bomb(hero.rect.centerx, hero.rect.centery, "hero", None)
-                    all_sprites.add(bomb)
-                    bombs.add(bomb)
-            
             # Spawn enemy event
             if event.type == pygame.USEREVENT + 1:
                 gf.spawn_enemy(enemies)
@@ -58,7 +48,6 @@ def main():
         # Update hero
         hero.handle_movement(keys_pressed)
         hero.update_shooting_cooldown(current_time)
-        hero.update_landing_bomb_cooldown(current_time)
 
         # Update enemies
         for enemy in enemies:
@@ -71,8 +60,6 @@ def main():
         bullets.update()
 
         current_time = pygame.time.get_ticks()
-        for bomb in bombs:
-            bomb.update(current_time, all_sprites)
         
         # Check collisions: enemy bullet -> hero
         for bullet in bullets:
@@ -99,7 +86,7 @@ def main():
                             # 3) Reset score to 0
                             score = 0
                             # 4) Keep the same spawn timer
-                            pygame.time.set_timer(pygame.USEREVENT + 1, ENEMY_SPAWN_INTERVAL)
+                            pygame.time.set_timer(pygame.USEREVENT + 1, ENEMY_SPAWN_INTERVAL_LV1)
                             # 5) Continue the game loop (i.e. start fresh)
                             continue
         
@@ -120,21 +107,7 @@ def main():
                             if score > high_score:
                                 high_score = score
         
-        # check collisions: hero bomb -> enemy
-        for enemy in enemies:
-            for bomb in bombs:
-                if bomb.rect.colliderect(enemy.rect):
-                    enemy.hp -= 3
-                    bomb.destroy()
-                    if enemy.hp <= 0:
-                        explosion = Explosion(enemy.rect.centerx, enemy.rect.centery)
-                        explosions.add(explosion)
-                        all_sprites.add(explosion)
-                        enemy.kill()
-                        # Increase score
-                        score += 1
-                        if score > high_score:
-                            high_score = score
+      
 
         current_time = pygame.time.get_ticks()
         for explosion in explosions:

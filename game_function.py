@@ -1,9 +1,9 @@
 import pygame
 import random 
 from enemy import Enemy 
-from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from configs.config import SCREEN_WIDTH, SCREEN_HEIGHT
 
-from config import FPS, clock, screen
+from configs.config import FPS, clock, screen
 
 def spawn_enemy(enemy_group):
     """Spawn an enemy at a random edge of the screen."""
@@ -25,17 +25,7 @@ def spawn_enemy(enemy_group):
     enemy_group.add(enemy)
 
 def show_game_over_popup(screen, current_score, high_score):
-    """
-    Displays a popup that says "You Lose" with the current/ high score, and has 2 buttons:
-      - Retry
-      - Exit
-
-    Returns "retry" if the user clicks the Retry button,
-    Returns "exit" if the user clicks the Exit button,
-    or if user closes the window, also return "exit".
-    """
-
-    # Fonts and colors
+    
     font_big = pygame.font.SysFont(None, 60)
     font_small = pygame.font.SysFont(None, 36)
     WHITE = (255, 255, 255)

@@ -2,7 +2,7 @@ import pygame
 import math
 from bullet import Bullet
 
-from config import ENEMY_SPEED, ENEMY_SHOOT_RANGE,ENEMY_RELOAD_TIME
+from configs.config import ENEMY_SPEED, ENEMY_SHOOT_RANGE,ENEMY_RELOAD_TIME
 
 
 class Enemy(pygame.sprite.Sprite):

@@ -1,5 +1,5 @@
 import pygame
-from config import EXPLOSION_DURATION
+from configs.config import EXPLOSION_DURATION
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, x, y):
