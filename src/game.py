@@ -103,8 +103,7 @@ class Game:
         hud.display_hud(
             hud.screen, 
             self.hero.hp, 
-            self.collision_manager.score, 
-            self.collision_manager.highest_score
+            self.level_manager.current_level + 1
         )
         
         pygame.display.flip()
