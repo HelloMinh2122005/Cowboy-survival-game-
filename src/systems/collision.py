@@ -12,8 +12,6 @@ class CollisionManager:
         self.bullets = bullets
         self.explosions = explosions
         self.level_manager = level_manager
-        self.score = 0
-        self.highest_score = 0
 
     def check_enemy_bullets_hero_collision(self, screen):
         """Check collisions between enemy bullets and hero"""
@@ -26,7 +24,7 @@ class CollisionManager:
                     bullet.destroy()
                     if self.hero.hp <= 0:
                         print("Game Over! You died.")
-                        choice = hud.show_game_over_popup(screen, self.score, self.highest_score)
+                        choice = hud.show_game_over_popup(screen)
 
                         if choice == "exit":
                             game_status["running"] = False
@@ -51,11 +49,6 @@ class CollisionManager:
                             self.all_sprites.add(explosion)
                             enemy.kill()
                             
-                            # Increase score
-                            self.score += 1
-                            if self.score > self.highest_score:
-                                self.highest_score = self.score
-
                             # Check if level is complete
                             if self.level_manager.enemy_killed():
                                 level_result, choice = self.level_manager.advance_level(screen)
@@ -73,7 +66,6 @@ class CollisionManager:
         self.bullets.empty()
         self.hero = Hero(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.all_sprites.add(self.hero)
-        self.score = 0
         self.level_manager.reset()
         return self.hero
         

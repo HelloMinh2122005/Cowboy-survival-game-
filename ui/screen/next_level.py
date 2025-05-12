@@ -130,6 +130,11 @@ def show_vid_next_level(screen, level):
     return "next"
 
 def show_game_next_level(screen, level):
+
+    img_to_display = [
+        
+    ]
+
     font_big = pygame.font.SysFont(None, 60)
     font_small = pygame.font.SysFont(None, 36)
     WHITE = (255, 255, 255)
