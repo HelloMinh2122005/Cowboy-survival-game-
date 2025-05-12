@@ -109,7 +109,7 @@ class Game:
         pygame.display.flip()
 
     def show_menu_screen(self):
-        choice = hud.show_game_image_main_menu(hud.screen) and hud.show_vid_intro(hud.screen) and hud.show_vid_next_level(hud.screen, 0) and hud.show_game_next_level(hud.screen, 0)
+        choice = hud.show_game_image_main_menu(hud.screen) and hud.show_vid_next_level(hud.screen, 0) and hud.show_game_next_level(hud.screen, 0)
         if choice == "play":
             self.running = True
         elif choice == "exit":
