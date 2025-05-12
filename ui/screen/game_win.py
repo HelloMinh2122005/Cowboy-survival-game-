@@ -1,55 +1,43 @@
 import pygame
 from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, clock
+from src.helpers.font_helper import get_font, FONT_LARGE, FONT_SMALL, FONT_MEDIUM
+
 
 def show_game_win_popup(screen):
-    font_big = pygame.font.SysFont(None, 72)
-    font_medium = pygame.font.SysFont(None, 48)
-    font_small = pygame.font.SysFont(None, 36)
+    font_small = get_font(FONT_SMALL)
     
     # Colors
     WHITE = (255, 255, 255)
-    GRAY = (50, 50, 50)
-    GOLD = (255, 215, 0)
+    GREEN = (0, 200, 0)
     RED = (200, 0, 0)
-    GREEN = (0, 200, 0)  # Added green color for restart button
 
-    # Load victory image
+    # Load background image
     try:
-        victory_image = pygame.image.load("assets/images/win.jpg")
-        # Scale image to fit in popup (adjust size as needed)
-        image_width = 300
-        image_height = 150
-        victory_image = pygame.transform.scale(victory_image, (image_width, image_height))
+        background_image = pygame.image.load("assets/images/final.png")
+        background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        print("Loaded victory background image")
     except Exception as e:
-        print(f"Error loading victory image: {e}")
-        victory_image = None
-
-    # Prepare text surfaces
-    win_text = font_big.render("30/4/1975", True, GOLD)
-    congrats_text = font_medium.render("Miền Nam hoàn toàn giải phóng", True, WHITE)
+        print(f"Error loading victory background image: {e}")
+        background_image = None
 
     # Button text
-    restart_text = font_small.render("Restart", True, WHITE)
-    exit_text = font_small.render("Exit", True, WHITE)
+    restart_text = font_small.render("Chơi lại", True, WHITE)
+    exit_text = font_small.render("Thoát", True, WHITE)
 
-    # Create popup rectangle
-    popup_width = 500
-    popup_height = 400
-    popup_x = (SCREEN_WIDTH - popup_width) // 2
-    popup_y = (SCREEN_HEIGHT - popup_height) // 2
-    popup_rect = pygame.Rect(popup_x, popup_y, popup_width, popup_height)
+    # Button dimensions
+    button_width = 200
+    button_height = 70
+    button_spacing = 50  # Space between buttons
 
-    # Button rectangles
-    button_width = 180
-    button_height = 60
-    button_spacing = 20  # Space between buttons
-
-    # Position the buttons side by side
-    restart_button_x = popup_x + (popup_width // 2) - button_width - (button_spacing // 2)
-    exit_button_x = popup_x + (popup_width // 2) + (button_spacing // 2)
-    buttons_y = popup_y + popup_height - 100
+    # Position the buttons at the bottom of the screen
+    buttons_y = SCREEN_HEIGHT - 100
     
+    # Restart button (left)
+    restart_button_x = (SCREEN_WIDTH // 2) - button_width - (button_spacing // 2)
     restart_button_rect = pygame.Rect(restart_button_x, buttons_y, button_width, button_height)
+    
+    # Exit button (right)
+    exit_button_x = (SCREEN_WIDTH // 2) + (button_spacing // 2)
     exit_button_rect = pygame.Rect(exit_button_x, buttons_y, button_width, button_height)
 
     popup_running = True
@@ -68,36 +56,18 @@ def show_game_win_popup(screen):
                 if restart_button_rect.collidepoint(mouse_pos):
                     return "retry"  # Return "retry" for consistency with other screens
 
-        # Create semi-transparent background overlay
-        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))  # Black with alpha for transparency
-        screen.blit(overlay, (0, 0))
-
-        # Draw popup background
-        pygame.draw.rect(screen, GRAY, popup_rect)
-        
-        # Draw gold border around popup
-        pygame.draw.rect(screen, GOLD, popup_rect, 4)
-
-        # Draw victory image
-        if victory_image:
-            image_x = popup_x + (popup_width - image_width) // 2
-            image_y = popup_y + 40
-            screen.blit(victory_image, (image_x, image_y))
-            # Adjust title position to appear below the image
-            title_y = image_y + image_height + 10
+        # Draw background image
+        if background_image:
+            screen.blit(background_image, (0, 0))
         else:
-            title_y = popup_y + 40
-
-        # Draw title
-        screen.blit(win_text, (popup_x + (popup_width - win_text.get_width()) // 2, title_y))
-        screen.blit(congrats_text, (popup_x + (popup_width - congrats_text.get_width()) // 2, title_y + 60))
+            # Fallback if image fails to load
+            screen.fill((0, 0, 0))
         
         # Draw restart button
-        pygame.draw.rect(screen, GREEN, restart_button_rect)
+        pygame.draw.rect(screen, GREEN, restart_button_rect, border_radius=20)
         
         # Draw exit button
-        pygame.draw.rect(screen, RED, exit_button_rect)
+        pygame.draw.rect(screen, RED, exit_button_rect, border_radius=20)
 
         # Draw button text
         screen.blit(restart_text,

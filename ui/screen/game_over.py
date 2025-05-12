@@ -92,8 +92,8 @@ def show_game_over_popup(screen):
         screen.blit(lose_text, (lose_text_x, lose_text_y))
         
         # Draw buttons
-        pygame.draw.rect(screen, GREEN, retry_button_rect)
-        pygame.draw.rect(screen, RED, exit_button_rect)
+        pygame.draw.rect(screen, GREEN, retry_button_rect, border_radius=20)
+        pygame.draw.rect(screen, RED, exit_button_rect, border_radius=20)
 
         # Text on buttons
         screen.blit(retry_text,

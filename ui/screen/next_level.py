@@ -1,9 +1,18 @@
 import pygame
 from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, clock
 from moviepy.video.io.VideoFileClip import VideoFileClip
-from src.helpers.font_helper import get_font, FONT_MEDIUM
+from src.helpers.font_helper import get_font, FONT_MEDIUM, FONT_LARGE, FONT_SMALL
 
 def show_vid_next_level(screen, level):
+
+    # Load and scale the background to fit the screen
+    background = pygame.image.load("assets/images/background.jpg")
+    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    
+    # Create semi-transparent overlay once (outside the loop)
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+
     vid_to_display = [
         "assets/videos/00.mp4",
         "assets/videos/01.mp4",
@@ -33,14 +42,14 @@ def show_vid_next_level(screen, level):
         video_width = int(video_max_height * video_ratio)
     
     # Set up UI elements
-    font_big = pygame.font.SysFont(None, 60)
-    font_small = pygame.font.SysFont(None, 36)
+    font_big = get_font(FONT_MEDIUM)
+    font_small = get_font(FONT_SMALL)
     WHITE = (255, 255, 255)
     GRAY = (50, 50, 50)
     GREEN = (0, 200, 0)
     
     # Prepare text
-    level_text = font_big.render(f"Hành trình chống Mỹ", False, WHITE)
+    level_text = font_big.render(f"Chiến tranh chống Mỹ", False, WHITE)
     next_button_text = font_small.render("Tiếp tục", False, WHITE)
     
     # Create popup rectangle - make it larger to accommodate the video
@@ -56,7 +65,7 @@ def show_vid_next_level(screen, level):
     video_rect = pygame.Rect(video_x, video_y, video_width, video_height)
     
     # Next button
-    button_width = 120
+    button_width = 200
     button_height = 50
     next_button_x = popup_x + (popup_width - button_width) // 2
     next_button_y = popup_y + popup_height - 70
@@ -88,11 +97,9 @@ def show_vid_next_level(screen, level):
                 if next_button_rect.collidepoint(mouse_pos):
                     video_clip.close()
                     return "next"
-        
-        # Create semi-transparent overlay for the background
-        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))  # Black with alpha for transparency
-        screen.blit(overlay, (0, 0))
+                
+        screen.blit(background, (0, 0))
+        screen.blit(overlay, (0, 0))  
         
         # Draw popup
         pygame.draw.rect(screen, GRAY, popup_rect)
@@ -117,7 +124,7 @@ def show_vid_next_level(screen, level):
         pygame.draw.rect(screen, WHITE, video_rect, 2)
         
         # Draw next button
-        pygame.draw.rect(screen, GREEN, next_button_rect)
+        pygame.draw.rect(screen, GREEN, next_button_rect, border_radius=20)
         
         # Button text
         screen.blit(next_button_text,
@@ -138,8 +145,10 @@ def show_game_next_level(screen, level):
         "assets/images/mau_than_1968.png",
         "assets/images/thanh_co_Quang_Tri.png",
         "assets/images/30_4_1975.png",
-        "assets/images/final.png",
     ]
+
+    if level >= len(img_to_display):
+        return "next"
 
     # Colors
     WHITE = (255, 255, 255)
@@ -162,8 +171,8 @@ def show_game_next_level(screen, level):
     button_height = 70
     
     # Center button at bottom of screen
-    button_x = (SCREEN_WIDTH - button_width) // 2
-    button_y = SCREEN_HEIGHT - 120 
+    button_x = (SCREEN_WIDTH - button_width) // 2 
+    button_y = SCREEN_HEIGHT - 100
     
     play_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
     
@@ -189,7 +198,7 @@ def show_game_next_level(screen, level):
             screen.fill((0, 0, 0))
         
         # Draw play button
-        pygame.draw.rect(screen, GREEN, play_button_rect)
+        pygame.draw.rect(screen, GREEN, play_button_rect, border_radius=20)
         
         # Draw button text (centered on button)
         play_text_x = button_x + (button_width - play_text.get_width()) // 2

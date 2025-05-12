@@ -24,9 +24,12 @@ def show_game_image_main_menu(screen):
     font_title = get_font(FONT_LARGE)
     font_button = get_font(FONT_MEDIUM)
     
-    # Create title
+    # Create title with "bold" effect by rendering twice with slight offset
     title_text1 = font_title.render("Chiến tranh chống Mỹ,", True, GOLD)
+    title_text1_shadow = font_title.render("Chiến tranh chống Mỹ,", True, GOLD)
+    
     title_text2 = font_title.render("thống nhất đất nước", True, GOLD)
+    title_text2_shadow = font_title.render("thống nhất đất nước", True, GOLD)
     
     # Position title (centered horizontally)
     title1_x = (SCREEN_WIDTH - title_text1.get_width()) // 2
@@ -35,7 +38,7 @@ def show_game_image_main_menu(screen):
     title2_y = 160  # Position below the first line
     
     # Create play button
-    play_text = font_button.render("Chơi", False, WHITE)
+    play_text = font_button.render("Chơi", True, WHITE)
     button_width = 200
     button_height = 70
     button_x = (SCREEN_WIDTH - button_width) // 2
@@ -64,12 +67,19 @@ def show_game_image_main_menu(screen):
             # Fallback background color if image fails to load
             screen.fill((0, 0, 0))
             
-        # Draw title
+        # Draw title with "bold" effect - shadow first, then main text
+        offset = 2  # Adjust this for bold thickness
+        
+        # Draw shadows first
+        screen.blit(title_text1_shadow, (title1_x + offset, title1_y + offset))
+        screen.blit(title_text2_shadow, (title2_x + offset, title2_y + offset))
+        
+        # Draw main text
         screen.blit(title_text1, (title1_x, title1_y))
         screen.blit(title_text2, (title2_x, title2_y))
         
         # Draw play button
-        pygame.draw.rect(screen, GREEN, play_button_rect)
+        pygame.draw.rect(screen, GREEN, play_button_rect, border_radius=20)
         
         # Draw button text (centered on button)
         play_text_x = button_x + (button_width - play_text.get_width()) // 2

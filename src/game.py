@@ -50,9 +50,7 @@ class Game:
                     self.all_sprites.add(self.bullets)
                 elif event.key == pygame.K_p:
                     choice = hud.show_game_pause_popup(
-                        hud.screen, 
-                        self.collision_manager.score, 
-                        self.collision_manager.highest_score
+                        hud.screen
                     )
                     if choice == "exit":
                         self.running = False
