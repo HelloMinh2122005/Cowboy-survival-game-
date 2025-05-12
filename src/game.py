@@ -108,7 +108,17 @@ class Game:
         
         pygame.display.flip()
 
+    def show_menu_screen(self):
+        choice = hud.show_game_image_main_menu(hud.screen) and hud.show_vid_intro(hud.screen) and hud.show_vid_next_level(hud.screen, 0) and hud.show_game_next_level(hud.screen, 0)
+        if choice == "play":
+            self.running = True
+        elif choice == "exit":
+            self.running = False
+
     def run(self):
+        # Show the main menu screen
+        self.show_menu_screen()
+        
         while self.running:
             dt = hud.clock.tick(FPS)  # Limit frame rate
             current_time = pygame.time.get_ticks()  # current time in ms

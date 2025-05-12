@@ -45,6 +45,8 @@ class LevelManager:
         """Advance to the next level"""
         self.current_level += 1
         if self.current_level >= len(self.game_difficulty):
+            hud.show_vid_next_level(screen, self.current_level)
+            hud.show_game_next_level(screen, self.current_level)
             choice = hud.show_game_win_popup(screen)
             return False, choice 
                 

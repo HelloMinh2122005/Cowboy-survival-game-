@@ -1,6 +1,7 @@
 import pygame
 from src.configs.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, clock
 from moviepy.video.io.VideoFileClip import VideoFileClip
+from src.helpers.font_helper import get_font, FONT_MEDIUM
 
 def show_vid_next_level(screen, level):
     vid_to_display = [
@@ -9,6 +10,7 @@ def show_vid_next_level(screen, level):
         "assets/videos/02.mp4",
         "assets/videos/03.mp4",
         "assets/videos/04.mp4",
+        "assets/videos/huc_cong.mp4",
     ]
     
     # Get the video path for the current level
@@ -38,8 +40,8 @@ def show_vid_next_level(screen, level):
     GREEN = (0, 200, 0)
     
     # Prepare text
-    level_text = font_big.render(f"Level {level+1}", True, WHITE)
-    next_button_text = font_small.render("Next", True, WHITE)
+    level_text = font_big.render(f"Hành trình chống Mỹ", False, WHITE)
+    next_button_text = font_small.render("Tiếp tục", False, WHITE)
     
     # Create popup rectangle - make it larger to accommodate the video
     popup_width = max(500, video_width + 100)
@@ -130,37 +132,40 @@ def show_vid_next_level(screen, level):
     return "next"
 
 def show_game_next_level(screen, level):
-
     img_to_display = [
-        
+        "assets/images/dien_bien_phu.png",
+        "assets/images/vi_tuyen_17.png",
+        "assets/images/mau_than_1968.png",
+        "assets/images/thanh_co_Quang_Tri.png",
+        "assets/images/30_4_1975.png",
+        "assets/images/final.png",
     ]
 
-    font_big = pygame.font.SysFont(None, 60)
-    font_small = pygame.font.SysFont(None, 36)
+    # Colors
     WHITE = (255, 255, 255)
-    GRAY = (50, 50, 50)
     GREEN = (0, 200, 0)
+    
+    
+    font_button = get_font(FONT_MEDIUM)
 
-    # Prepare text surfaces
-    level_complete_text = font_big.render(f"Level {level} Complete!", True, WHITE)
-    next_level_text = font_small.render(f"Ready for Level {level+1}?", True, WHITE)
+    try:
+        background_image = pygame.image.load(img_to_display[level])
+        background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        print(f"Loaded background image: {img_to_display[level]}")
+    except Exception as e:
+        print(f"Error loading level image: {e}")
+        background_image = None
+
+    play_text = font_button.render("Tiếp tục", False, WHITE)
     
-    # Button text
-    next_button_text = font_small.render("Next", True, WHITE)
+    button_width = 200
+    button_height = 70
     
-    # Create popup rectangle
-    popup_width = 400
-    popup_height = 250
-    popup_x = (SCREEN_WIDTH - popup_width) // 2
-    popup_y = (SCREEN_HEIGHT - popup_height) // 2
-    popup_rect = pygame.Rect(popup_x, popup_y, popup_width, popup_height)
+    # Center button at bottom of screen
+    button_x = (SCREEN_WIDTH - button_width) // 2
+    button_y = SCREEN_HEIGHT - 120 
     
-    # Next button
-    button_width = 120
-    button_height = 50
-    next_button_x = popup_x + (popup_width - button_width) // 2
-    next_button_y = popup_y + 170
-    next_button_rect = pygame.Rect(next_button_x, next_button_y, button_width, button_height)
+    play_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
     
     popup_running = True
     while popup_running:
@@ -172,34 +177,27 @@ def show_game_next_level(screen, level):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 
-                if next_button_rect.collidepoint(mouse_pos):
+                # Check if play button was clicked
+                if play_button_rect.collidepoint(mouse_pos):
                     return "next"
-                    
-        # Create semi-transparent overlay
-        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 128))  # Black with alpha for transparency
-        screen.blit(overlay, (0, 0))
         
-        # Draw popup
-        pygame.draw.rect(screen, GRAY, popup_rect)
+        # Draw background image
+        if background_image:
+            screen.blit(background_image, (0, 0))
+        else:
+            # Fallback if image fails to load
+            screen.fill((0, 0, 0))
         
-        # Draw title and text
-        screen.blit(level_complete_text, 
-                   (popup_x + (popup_width - level_complete_text.get_width()) // 2, 
-                    popup_y + 40))
-        screen.blit(next_level_text, 
-                   (popup_x + (popup_width - next_level_text.get_width()) // 2, 
-                    popup_y + 110))
-                    
-        # Draw next button
-        pygame.draw.rect(screen, GREEN, next_button_rect)
+        # Draw play button
+        pygame.draw.rect(screen, GREEN, play_button_rect)
         
-        # Button text
-        screen.blit(next_button_text,
-                   (next_button_rect.centerx - next_button_text.get_width() // 2,
-                    next_button_rect.centery - next_button_text.get_height() // 2))
-                    
+        # Draw button text (centered on button)
+        play_text_x = button_x + (button_width - play_text.get_width()) // 2
+        play_text_y = button_y + (button_height - play_text.get_height()) // 2
+        screen.blit(play_text, (play_text_x, play_text_y))
+        
+        # Update display
         pygame.display.flip()
         clock.tick(FPS)
-        
-    return "next"
+    
+    return "exit"
